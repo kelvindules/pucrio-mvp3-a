@@ -1,7 +1,7 @@
 import requests
 from requests import Response
 
-clock_api_url = "http://localhost:5001/clock-punches"
+clock_api_url = "http://host.docker.internal:5001/clock-punches"
 
 
 def get_clock_punches(token, username, params):
