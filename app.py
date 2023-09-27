@@ -25,7 +25,8 @@ def get_clock_punches():
     token = request.headers.get("x-user-token")
     username = request.headers.get("x-user-name")
     params = request.args
-    return jsonify(clock_punch_api.get_clock_punches(token, username, params).json())
+    response = clock_punch_api.get_clock_punches(token, username, params)
+    return jsonify(response.json()), response.status_code
 
 @app.post("/registry/account/clock-punches", tags=[tag])
 def post_clock_punch():
@@ -34,7 +35,8 @@ def post_clock_punch():
     """
     token = request.headers.get("x-user-token")
     username = request.headers.get("x-user-name")
-    return jsonify(clock_punch_api.register_clock_punch(token, username).json())
+    response = clock_punch_api.register_clock_punch(token, username)
+    return jsonify(response.json()), response.status_code
 
 @app.delete("/registry/account/clock-punches", tags=[tag])
 def delete_clock_punch():
@@ -43,7 +45,8 @@ def delete_clock_punch():
     """
     token = request.headers.get("x-user-token")
     clock_punch_id = request.headers.get("x-clock-punch-id")
-    return jsonify(clock_punch_api.delete_clock_punch(token, clock_punch_id).json())
+    response = clock_punch_api.delete_clock_punch(token, clock_punch_id)
+    return jsonify(response.json()), response.status_code
 
 @app.post("/account/login", tags=[account_tag])
 def login():
@@ -53,12 +56,14 @@ def login():
     form = request.get_json()
     username = form["username"]
     password= form["password"]
-    return jsonify(auth.login(username, password).json())
+    response = auth.login(username, password)
+    return jsonify(response.json()), response.status_code
 
 @app.put("/account/refresh-token", tags=[account_tag])
 def refresh_current_token():
     """
     Refreshes user token at the external service
     """
-    refresh_token = request.headers["x-user-refresh-token"][0]
-    return jsonify(auth.refresh_token(refresh_token).json())
+    refresh_token = request.headers.get("x-user-refresh-token")
+    response = auth.refresh_token(refresh_token)
+    return jsonify(response.json()), response.status_code
